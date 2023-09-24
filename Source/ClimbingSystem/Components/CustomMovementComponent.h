@@ -18,19 +18,21 @@ public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
-
 #pragma region ClimbTraces
 
 	TArray<FHitResult> DoCapsuleTraceMultiByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false);
+	FHitResult DoLineTraceSingleByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false);
 
 #pragma endregion ClimbTraces
 
 #pragma region ClimbCore
 
 	void TraceClimbableSurfaces();
+	void TraceFromEyeHeight(float TraceDistance, float TraceStartOffset = 0.f);
 
 #pragma endregion ClimbCore
 
+private:
 #pragma region ClimbVariables
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"))
