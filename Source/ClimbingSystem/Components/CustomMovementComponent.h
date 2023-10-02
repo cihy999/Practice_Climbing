@@ -6,6 +6,15 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "CustomMovementComponent.generated.h"
 
+UENUM(BlueprintType)
+namespace ECustomMovementMode
+{
+	enum Type
+	{
+		MOVE_Climb	UMETA(DisplayName = "Climb Mode"),
+	};
+}
+
 /**
  * 
  */
@@ -17,24 +26,41 @@ class CLIMBINGSYSTEM_API UCustomMovementComponent : public UCharacterMovementCom
 public:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-private:
+
 #pragma region ClimbTraces
 
-	TArray<FHitResult> DoCapsuleTraceMultiByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false);
-	FHitResult DoLineTraceSingleByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false);
+public:
+	void ToggleClimbing(bool bEnableClimb);
+	bool CanStartClimbing();
+	bool IsClimbing() const;
+
+private:
+	TArray<FHitResult> DoCapsuleTraceMultiByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false, bool bDrawPersistantShapes = false);
+	FHitResult DoLineTraceSingleByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false, bool bDrawPersistantShapes = false);
 
 #pragma endregion ClimbTraces
 
 #pragma region ClimbCore
 
-	void TraceClimbableSurfaces();
-	void TraceFromEyeHeight(float TraceDistance, float TraceStartOffset = 0.f);
+private:
+	/// <summary>
+	/// 追蹤可以攀爬的表面
+	/// </summary>
+	/// <return>true=可以</return>
+	bool TraceClimbableSurfaces();
+	FHitResult TraceFromEyeHeight(float TraceDistance, float TraceStartOffset = 0.f);
 
 #pragma endregion ClimbCore
 
-private:
 #pragma region ClimbVariables
 
+	TArray<FHitResult> ClimbableSurfacesTracedResults;
+
+#pragma endregion ClimbVariables
+
+#pragma region BP_ClimbVariables
+
+private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"))
 	TArray<TEnumAsByte<EObjectTypeQuery>> ClimbableSurfaceTraceTypes;
 
@@ -44,5 +70,5 @@ private:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"))
 	float ClimbCapsuleTraceHalfHeight = 72.f;
 
-#pragma endregion ClimbVariables
+#pragma endregion BP_ClimbVariables
 };
