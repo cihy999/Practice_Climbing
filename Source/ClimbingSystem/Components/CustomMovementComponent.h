@@ -23,9 +23,16 @@ class CLIMBINGSYSTEM_API UCustomMovementComponent : public UCharacterMovementCom
 {
 	GENERATED_BODY()
 
+#pragma region OverridenFunctions
+
 protected:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMode, uint8 PreviousCustomMode) override;
+	virtual void PhysCustom(float deltaTime, int32 Iterations) override;
+	virtual float GetMaxSpeed() const override;
+	virtual float GetMaxAcceleration() const override;
+
+#pragma endregion OverridenFunctions
 
 #pragma region ClimbTraces
 
@@ -54,11 +61,22 @@ private:
 	void StartClimbing();
 	void StopClimbing();
 
+	void PhysClimb(float deltaTime, int32 Iterations);
+
+	void ProcessClimbableSurfaceInfo();
+
+	FQuat GetClimbRotation(float deltaTime);
+
+	void SnapMovementToClimbaleSurface(float deltaTime);
+
 #pragma endregion ClimbCore
 
 #pragma region ClimbVariables
 
+private:
 	TArray<FHitResult> ClimbableSurfacesTracedResults;
+	FVector CurrentClimbableSurfacesLocation;
+	FVector CurrentClimbableSurfacesNormal;
 
 #pragma endregion ClimbVariables
 
@@ -73,6 +91,15 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"))
 	float ClimbCapsuleTraceHalfHeight = 72.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"))
+	float MaxBrakingClimbDeceleration = 400.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"))
+	float MaxClimbSpeed = 100.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character Movement: Climbing", meta = (AllowPrivateAccess = "true"))
+	float MaxClimbAcceleration = 300.f;
 
 #pragma endregion BP_ClimbVariables
 };
