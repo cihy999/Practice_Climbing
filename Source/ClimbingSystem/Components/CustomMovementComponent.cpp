@@ -30,6 +30,11 @@ void UCustomMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovem
 		bOrientRotationToMovement = true;
 		CharacterOwner->GetCapsuleComponent()->SetCapsuleHalfHeight(96.f);
 
+		// 恢復角度
+		const FRotator dirtyRotation = UpdatedComponent->GetComponentRotation();
+		const FRotator cleanStandRotation = FRotator(0.f, dirtyRotation.Yaw, 0.f);
+		UpdatedComponent->SetRelativeRotation(cleanStandRotation);
+
 		StopMovementImmediately();
 	}
 
@@ -135,32 +140,6 @@ FHitResult UCustomMovementComponent::DoLineTraceSingleByObject(const FVector& St
 #pragma endregion ClimbTraces
 
 #pragma region ClimbCore
-
-void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
-{
-	if (bEnableClimb)
-	{
-		if (CanStartClimbing())
-		{
-			Debug::Print(TEXT("Can Start Climbing"));
-			StartClimbing();
-		}
-		else
-		{
-			Debug::Print(TEXT("Can NOT Start Climbing"));
-		}
-	}
-	else
-	{
-		// stop climbing
-		StopClimbing();
-	}
-}
-
-bool UCustomMovementComponent::IsClimbing() const
-{
-	return MovementMode == MOVE_Custom && CustomMovementMode == ECustomMovementMode::MOVE_Climb;
-}
 
 bool UCustomMovementComponent::TraceClimbableSurfaces()
 {
@@ -308,3 +287,29 @@ void UCustomMovementComponent::SnapMovementToClimbaleSurface(float deltaTime)
 }
 
 #pragma endregion ClimbCore
+
+void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
+{
+	if (bEnableClimb)
+	{
+		if (CanStartClimbing())
+		{
+			Debug::Print(TEXT("Can Start Climbing"));
+			StartClimbing();
+		}
+		else
+		{
+			Debug::Print(TEXT("Can NOT Start Climbing"));
+		}
+	}
+	else
+	{
+		// stop climbing
+		StopClimbing();
+	}
+}
+
+bool UCustomMovementComponent::IsClimbing() const
+{
+	return MovementMode == MOVE_Custom && CustomMovementMode == ECustomMovementMode::MOVE_Climb;
+}

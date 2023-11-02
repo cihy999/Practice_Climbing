@@ -36,10 +36,6 @@ protected:
 
 #pragma region ClimbTraces
 
-public:
-	void ToggleClimbing(bool bEnableClimb);
-	bool IsClimbing() const;
-
 private:
 	TArray<FHitResult> DoCapsuleTraceMultiByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false, bool bDrawPersistantShapes = false);
 	FHitResult DoLineTraceSingleByObject(const FVector& Start, const FVector& End, bool bShowDebugShape = false, bool bDrawPersistantShapes = false);
@@ -102,4 +98,9 @@ private:
 	float MaxClimbAcceleration = 300.f;
 
 #pragma endregion BP_ClimbVariables
+
+public:
+	void ToggleClimbing(bool bEnableClimb);
+	bool IsClimbing() const;
+	FORCEINLINE FVector GetClimbableSurfaceNormal() const { return CurrentClimbableSurfacesNormal; }
 };
