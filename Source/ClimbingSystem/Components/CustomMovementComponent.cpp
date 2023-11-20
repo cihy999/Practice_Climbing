@@ -148,7 +148,7 @@ bool UCustomMovementComponent::TraceClimbableSurfaces()
 	const FVector start = UpdatedComponent->GetComponentLocation() + startOffset;
 	const FVector end = start + UpdatedComponent->GetForwardVector();
 
-	ClimbableSurfacesTracedResults = DoCapsuleTraceMultiByObject(start, end, true);
+	ClimbableSurfacesTracedResults = DoCapsuleTraceMultiByObject(start, end);
 
 	return !ClimbableSurfacesTracedResults.IsEmpty();
 }
@@ -270,8 +270,6 @@ bool UCustomMovementComponent::CheckShouldStopClimbing()
 		return true;
 	}
 
-	Debug::Print(TEXT("Degree Diff: ") + FString::SanitizeFloat(degreeDiff), FColor::Cyan, 1);
-
 	return false;
 }
 
@@ -316,12 +314,7 @@ void UCustomMovementComponent::ToggleClimbing(bool bEnableClimb)
 	{
 		if (CanStartClimbing())
 		{
-			Debug::Print(TEXT("Can Start Climbing"));
 			StartClimbing();
-		}
-		else
-		{
-			Debug::Print(TEXT("Can NOT Start Climbing"));
 		}
 	}
 	else
