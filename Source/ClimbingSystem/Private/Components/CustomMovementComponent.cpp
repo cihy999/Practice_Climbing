@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "CustomMovementComponent.h"
+#include "Components/CustomMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/CapsuleComponent.h"
 #include "ClimbingSystem/ClimbingSystemCharacter.h"
